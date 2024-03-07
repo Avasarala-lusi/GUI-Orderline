@@ -9,6 +9,8 @@ class ImportData:
         self.table_view = table_view
         self.multi_select = multi_select
         self.multi_select.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
+        self.df = None
+        self.grouped_df = None
 
 
     def import_from_excel(self, progress_bar: QProgressBar, business_input: str, file_path: str):
@@ -51,17 +53,36 @@ class ImportData:
         master_df = master_df[['product_code', 'length_cm', 'width_cm', 'height_cm', 'volume_cm3']]
         return master_df
     
-    def order_data(self, df):
-        order_df = df.rename(columns={'日期': 'order_date', '订单编号': 'order_number', '店铺号': 'shop_number', '货号': 'product_code',
-                                      '订货数量': 'quantity', '业务类型':'business_type'}, errors='ignore')
-        # order_df = order_df.groupby(selected_items)['quantity'].sum()
+    def order_data(self, df, selected_items):
+        order_df = df.groupby(selected_items)['订货数量'].sum().reset_index()
 
-    def orderline_data(self,df):
-        pass
+         # Rename columns that exist in the DataFrame
+        columns_mapping = {
+        '日期': 'order_date',
+        '订单号': 'order_number',
+        '店铺号': 'shop_number',
+        '货号': 'product_code',
+        '订货数量': 'quantity',
+        '业务类型': 'business_type'
+    }
+        order_df = order_df.rename(columns=columns_mapping, errors='ignore')
 
-    def store_data(self, df1):
+        if 'shop_number' not in order_df.columns:
+            order_df['shop_number'] = None
+        if 'order_number' not in order_df.columns:
+            order_df['order_number'] = None
+
+        order_df = order_df[['order_date', 'order_number', 'shop_number',
+                             'product_code', 'quantity', 'business_type']]
+        
+        self.grouped_df = order_df
+        return order_df
+
+    def orderline_data(self):
+        self.grouped_df
+
+    def store_master(self, df1):
         conn = sqlite3.connect('mydatabase.db')
-        conn.execute('PRAGMA foreign_keys = ON;')
         # Define the SQL CREATE TABLE statement with column names and data types
         create_master_sql = """
         CREATE TABLE IF NOT EXISTS masterData (
@@ -73,43 +94,69 @@ class ImportData:
         );
         """
 
+        conn.execute(create_master_sql)
+    
+        try:
+            df1.to_sql('masterData', conn, if_exists='append', index=False)
+            print("Success!")
+        except sqlite3.IntegrityError as e:
+            print(f"Error: {e}. Duplicate product code found, record not inserted.")
+        conn.close
+
+
+    def store_order(self, df):
+        conn = sqlite3.connect('mydatabase.db')
+        conn.execute('PRAGMA foreign_keys = ON;')
+
         create_order_sql = """
         CREATE TABLE IF NOT EXISTS orderData(
-            order_id PRIMARY KEY AUTOINCREMENT,
+            order_id INTEGER PRIMARY KEY AUTOINCREMENT,
             order_number TEXT,
             shop_number TEXT,
-            FOREIGN KEY (product_code) REFERENCES masterData(product_code) NOT NULL,
+            product_code TEXT NOT NULL,
             quantity INTEGER NOT NULL,
             order_date DATE NOT NULL,
-            business_type TEXT NOT NULL
-        )"""
+            business_type TEXT NOT NULL,
+            FOREIGN KEY (product_code) REFERENCES masterData(product_code)
+        );
+        """
+        conn.execute(create_order_sql)
+
+        try:
+            df.to_sql('orderData', conn, if_exists='append', index=False)
+            print("yay!")
+        except sqlite3.IntegrityError as e:
+            print(f"Error: {e}. Duplicate order found, record not inserted.")
+        conn.close
+
+    def store_orderline(self, df):
+        conn = sqlite3.connect('mydatabase.db')
+        conn.execute('PRAGMA foreign_keys = ON;')
 
         create_orderline_sql = """
         CREATE TABLE IF NOT EXISTS orderlineData(
-            detail_id PRIMARY KEY AUTOINCREMENT,
+            detail_id INTEGER PRIMARY KEY AUTOINCREMENT,
             order_date DATE NOT NULL,
-            FOREIGN KEY (order_id) REFERENCES orderData(order_id) NOT NULL,
+            product_code TEXT NOT NULL,
             order_number TEXT,
             shop_number TEXT,
-            FOREIGN KEY (product_code) REFERENCES masterData(product_code) NOT NULL,
+            order_id INTEGER NOT NULL,
             product_quantity INTEGER NOT NULL,
             volume_cm3 REAL NOT NULL,
             capacity_factor INTEGER NOT NULL,
             orderline_quantity INTEGER NOT NULL,
-            business_type TEXT NOT NULL
+            business_type TEXT NOT NULL,
+            FOREIGN KEY (order_id) REFERENCES orderData(order_id),
+            FOREIGN KEY (product_code) REFERENCES masterData(product_code)
         )"""
 
-        conn.execute(create_master_sql)
-        # conn.execute(create_order_sql)
-        # conn.execute(create_orderline_sql)
+        conn.execute(create_orderline_sql)
 
         try:
-            df1.to_sql('masterData', conn, if_exists='append', index=False)
-            # df2.to_sql('orderData', conn, if_exists='append', index=False)
-            # df3.to_sql('orderlineData', conn, if_exists='append', index=False)
-            print("Success!")
+            df.to_sql('orderlineData', conn, if_exists='append', index=False)
+            print("yay!")
         except sqlite3.IntegrityError as e:
-            print(f"Error: {e}. Duplicate product code found, record not inserted.")
+            print(f"Error: {e}. Duplicate order found, record not inserted.")
         conn.close
 
 class PandasModel(QAbstractTableModel):
