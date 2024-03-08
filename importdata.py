@@ -10,7 +10,6 @@ class ImportData:
         self.multi_select = multi_select
         self.multi_select.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
         self.df = None
-        self.grouped_df = None
 
 
     def import_from_excel(self, progress_bar: QProgressBar, business_input: str, file_path: str):
@@ -75,11 +74,35 @@ class ImportData:
         order_df = order_df[['order_date', 'order_number', 'shop_number',
                              'product_code', 'quantity', 'business_type']]
         
-        self.grouped_df = order_df
         return order_df
 
-    def orderline_data(self):
-        self.grouped_df
+    def orderline_data(self, capacity):
+        conn = sqlite3.connect('mydatabase.db')
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+           SELECT od.order_id, od.order_date, od.product_code, 
+                  od.order_number, 
+                  od.shop_number,
+                  md.volume_cm3 * od.quantity as product_volume,
+                  od.quantity, od.business_type
+            FROM orderData od
+            LEFT JOIN masterData md
+            ON od.product_code = md.product_code   
+                       """)
+        orderline_data = cursor.fetchall()
+        conn.close()
+
+        orderline_df = pd.DataFrame(orderline_data, columns=[
+            'order_id', 'order_date', 'product_code', 
+            'order_number', 
+            'shop_number',
+            'product_volume',
+            'product_quantity', 
+            'business_type'
+        ])
+
+        print(orderline_df)
 
     def store_master(self, df1):
         conn = sqlite3.connect('mydatabase.db')

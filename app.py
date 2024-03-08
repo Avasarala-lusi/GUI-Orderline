@@ -45,12 +45,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.multiSelect.setVisible(True)
             self.groupButton.setVisible(True)
 
-    def calculate_result(self):
+    def calculate_result(self): 
         #  Get the list of selected items, include business type
         selected_items = [item.text() for item in self.multi_select.selectedItems()] 
         import_data = ImportData(self.table_view, self.multi_select)
         import_data.store_order(import_data.order_data(self.maindf, selected_items))
-        import_data.store_orderline(import_data.orderline_data(self.maindf))
+
+        capacity = self.lineEdit_2.text()
+        import_data.store_orderline(import_data.orderline_data(capacity))
+        import_data.orderline_data()
 
 
 
