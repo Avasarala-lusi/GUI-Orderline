@@ -12,50 +12,56 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.groupButton.setVisible(False)
         self.importButton.clicked.connect(self.import_csv)
         self.groupButton.clicked.connect(self.calculate_result)
+        self.downloadButton.clicked.connect(self.download_excel)
         self.lineEdit.setVisible(True)
+        self.lineEdit_2.setVisible(False)
         self.label.setVisible(True)
         self.progressBar.setVisible(False)
         self.label_2.setVisible(False)
+        self.label_4.setVisible(False)
         self.tableView.setVisible(False)
         self.table_view = self.tableView
+        self.export_tableview = self.exporttableView
         self.multiSelect.setVisible(False)
         self.multi_select = self.multiSelect
 
-        self.maindf = None
+        self.import_data = ImportData(self.table_view, self.export_tableview, self.multi_select)
 
+        self.final_ex = None
 
     def import_csv(self):
         file_path, _ = QFileDialog.getOpenFileName(None, "Open CSV File", "", "CSV Files (*.csv)")
         if file_path: 
-            # self.importButton.setVisible(False)
-            # self.lineEdit.setVisible(False)
-            # self.label.setVisible(False)
-            import_data = ImportData(self.table_view, self.multi_select)
-            # GeT the text from the QLineEdit widget
+
+            self.import_data.clear_data()
             businiess_type = self.lineEdit.text()
             self.progressBar.setVisible(True)
             
-            import_data.import_from_excel(self.progressBar, businiess_type, file_path)
-            self.maindf = import_data.df
-            import_data.store_master(import_data.master_data(self.maindf))
+            self.import_data.import_from_excel(self.progressBar, businiess_type, file_path)
+            self.import_data.store_master(self.import_data.master_data())
 
             self.progressBar.setVisible(False)
             self.tableView.setVisible(True)
             self.label_2.setVisible(True)
             self.multiSelect.setVisible(True)
             self.groupButton.setVisible(True)
+            self.lineEdit_2.setVisible(True)
+            self.label_4.setVisible(True)
 
     def calculate_result(self): 
         #  Get the list of selected items, include business type
-        selected_items = [item.text() for item in self.multi_select.selectedItems()] 
-        import_data = ImportData(self.table_view, self.multi_select)
-        import_data.store_order(import_data.order_data(self.maindf, selected_items))
+        selected_positions = [self.multi_select.row(item)  for item in self.multi_select.selectedItems()]
+        
+        self.import_data.store_order(self.import_data.order_data(selected_positions))
 
-        capacity = self.lineEdit_2.text()
-        import_data.store_orderline(import_data.orderline_data(capacity))
-        import_data.orderline_data()
+        capacity = int(self.lineEdit_2.text())
+        self.import_data.store_orderline(self.import_data.orderline_data(capacity))
+        self.final_ex = self.import_data.export_excel()
 
-
+    def download_excel(self):
+        file_path, _ = QFileDialog.getSaveFileName(None, "Save Excel File", "", "Excel Files (*.xlsx)")
+        if file_path:
+            self.final_ex.to_excel(file_path, index=False)
 
         
 def main():

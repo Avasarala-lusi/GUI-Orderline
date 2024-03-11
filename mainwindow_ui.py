@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(613, 603)
+        MainWindow.resize(707, 511)
         MainWindow.setDocumentMode(False)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -25,7 +25,7 @@ class Ui_MainWindow(object):
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
         self.splitter = QtWidgets.QSplitter(parent=self.tab)
-        self.splitter.setGeometry(QtCore.QRect(160, 110, 236, 23))
+        self.splitter.setGeometry(QtCore.QRect(180, 160, 236, 23))
         self.splitter.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.splitter.setObjectName("splitter")
         self.label = QtWidgets.QLabel(parent=self.splitter)
@@ -44,20 +44,28 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.importButton.setFont(font)
         self.importButton.setObjectName("importButton")
-        self.widget = QtWidgets.QWidget(parent=self.tab)
-        self.widget.setGeometry(QtCore.QRect(30, 310, 551, 221))
-        self.widget.setObjectName("widget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
+        self.textBrowser = QtWidgets.QTextBrowser(parent=self.tab)
+        self.textBrowser.setGeometry(QtCore.QRect(20, 10, 621, 111))
+        self.textBrowser.setObjectName("textBrowser")
+        self.layoutWidget = QtWidgets.QWidget(parent=self.tab)
+        self.layoutWidget.setGeometry(QtCore.QRect(30, 200, 611, 241))
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.progressBar = QtWidgets.QProgressBar(parent=self.widget)
+        self.progressBar = QtWidgets.QProgressBar(parent=self.layoutWidget)
         self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName("progressBar")
         self.verticalLayout.addWidget(self.progressBar)
-        self.tableView = QtWidgets.QTableView(parent=self.widget)
+        self.tableView = QtWidgets.QTableView(parent=self.layoutWidget)
         font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
         font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
         self.tableView.setFont(font)
+        self.tableView.setStyleSheet("gridline-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"font: 10pt \"Microsoft YaHei UI\";")
         self.tableView.setGridStyle(QtCore.Qt.PenStyle.SolidLine)
         self.tableView.setObjectName("tableView")
         self.verticalLayout.addWidget(self.tableView)
@@ -65,57 +73,80 @@ class Ui_MainWindow(object):
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
         self.groupButton = QtWidgets.QPushButton(parent=self.tab_2)
-        self.groupButton.setGeometry(QtCore.QRect(300, 270, 80, 22))
+        self.groupButton.setGeometry(QtCore.QRect(350, 250, 81, 41))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.groupButton.setFont(font)
         self.groupButton.setObjectName("groupButton")
-        self.splitter_3 = QtWidgets.QSplitter(parent=self.tab_2)
-        self.splitter_3.setGeometry(QtCore.QRect(230, 30, 221, 141))
-        self.splitter_3.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.splitter_3.setObjectName("splitter_3")
-        self.label_2 = QtWidgets.QLabel(parent=self.splitter_3)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.label_2.setFont(font)
-        self.label_2.setObjectName("label_2")
-        self.multiSelect = QtWidgets.QListWidget(parent=self.splitter_3)
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(-1)
-        self.multiSelect.setFont(font)
-        self.multiSelect.setStyleSheet("QListWidget {\n"
-"    background-color: #f0f0f0;\n"
-"    color: #333333;\n"
-"    font-family: Arial;\n"
-"    font-size: 12px;\n"
-"}\n"
-"\n"
-"QListWidget::item:selected {\n"
-"    background-color: #3399ff;\n"
-"}\n"
-"")
-        self.multiSelect.setObjectName("multiSelect")
-        self.layoutWidget = QtWidgets.QWidget(parent=self.tab_2)
-        self.layoutWidget.setGeometry(QtCore.QRect(239, 190, 186, 25))
-        self.layoutWidget.setObjectName("layoutWidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget)
+        self.layoutWidget1 = QtWidgets.QWidget(parent=self.tab_2)
+        self.layoutWidget1.setGeometry(QtCore.QRect(160, 240, 171, 61))
+        self.layoutWidget1.setObjectName("layoutWidget1")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget1)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label_4 = QtWidgets.QLabel(parent=self.layoutWidget)
+        self.label_4 = QtWidgets.QLabel(parent=self.layoutWidget1)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_4.setFont(font)
         self.label_4.setObjectName("label_4")
         self.horizontalLayout.addWidget(self.label_4)
-        self.lineEdit_2 = QtWidgets.QLineEdit(parent=self.layoutWidget)
+        self.lineEdit_2 = QtWidgets.QLineEdit(parent=self.layoutWidget1)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.lineEdit_2.setFont(font)
         self.lineEdit_2.setText("")
         self.lineEdit_2.setObjectName("lineEdit_2")
         self.horizontalLayout.addWidget(self.lineEdit_2)
+        self.layoutWidget2 = QtWidgets.QWidget(parent=self.tab_2)
+        self.layoutWidget2.setGeometry(QtCore.QRect(160, 40, 291, 161))
+        self.layoutWidget2.setObjectName("layoutWidget2")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.layoutWidget2)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.label_2 = QtWidgets.QLabel(parent=self.layoutWidget2)
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.label_2.setFont(font)
+        self.label_2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_2.addWidget(self.label_2)
+        self.multiSelect = QtWidgets.QListWidget(parent=self.layoutWidget2)
+        # Set font and size for items
+        font = QtGui.QFont("微软雅黑", 12)
+        self.multiSelect.setFont(font)
+
+        # Set text alignment for items to be centered
+        self.multiSelect.setStyleSheet("QListWidget {"
+                                        "    font: 12pt \"微软雅黑\";"
+                                        "    background-color: #f0f0f0;"
+                                        "    color: #333333;"
+                                        "    text-align: center;"  # Align text horizontally
+                                        "}"
+                                        "QListWidget::item:selected {"
+                                        "    background-color: #3399ff;"
+                                        "}")
+
+        # Set other properties
+        self.multiSelect.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
+        self.multiSelect.setTextElideMode(QtCore.Qt.TextElideMode.ElideMiddle)
+        self.multiSelect.setObjectName("multiSelect")
+        self.horizontalLayout_2.addWidget(self.multiSelect)
         self.tabWidget.addTab(self.tab_2, "")
+        self.tab_3 = QtWidgets.QWidget()
+        self.tab_3.setObjectName("tab_3")
+        self.exporttableView = QtWidgets.QTableView(parent=self.tab_3)
+        self.exporttableView.setGeometry(QtCore.QRect(30, 70, 641, 411))
+        self.exporttableView.setStyleSheet("gridline-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"font: 10pt \"Microsoft YaHei UI\";")
+        self.exporttableView.setObjectName("exporttableView")
+        self.downloadButton = QtWidgets.QPushButton(parent=self.tab_3)
+        self.downloadButton.setGeometry(QtCore.QRect(20, 10, 91, 31))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.downloadButton.setFont(font)
+        self.downloadButton.setObjectName("downloadButton")
+        self.tabWidget.addTab(self.tab_3, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -131,9 +162,22 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "业务形态"))
         self.lineEdit.setPlaceholderText(_translate("MainWindow", "ToB, ToC..."))
         self.importButton.setText(_translate("MainWindow", "导入CSV"))
+        self.textBrowser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:\'Microsoft YaHei UI\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">注意事项:</p>\n"
+"<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">1. 请严格按照表头为&quot; 日期, 订单号, 店铺号, 货号, 订货数量, 长, 宽, 高&quot; 的顺序导入CSV文件</p>\n"
+"<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">2. 请注意长宽高的单位为cm</p>\n"
+"<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">3. csv文件的编码格式必须为\'utf-8\'</p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "导入CSV"))
         self.groupButton.setText(_translate("MainWindow", "开始汇总"))
-        self.label_2.setText(_translate("MainWindow", "需要汇总的字段"))
         self.label_4.setText(_translate("MainWindow", "内径有效系数"))
         self.lineEdit_2.setPlaceholderText(_translate("MainWindow", "30, 50, 80..."))
+        self.label_2.setText(_translate("MainWindow", "请勾选需要汇总的字段"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "汇总数据"))
+        self.downloadButton.setText(_translate("MainWindow", "下载EXCEL"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "下载文件"))
